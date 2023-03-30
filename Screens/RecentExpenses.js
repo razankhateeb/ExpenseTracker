@@ -1,15 +1,14 @@
 import React from "react";
 import { ScrollView, Text, View } from "react-native";
-import ExpenseCategory from "../components/ExpensesOutput/ExpenseCategory";
-import ExpenseItem from "../components/ExpensesOutput/expenseItem";
+import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
 
 function RecentExpensesScreen() {
   return (
     <View>
-      <ExpenseCategory />
-      <ScrollView>
-        <ExpenseItem />
-      </ScrollView>
+      <ExpensesOutput
+        PeriodNameText={"Last 7 Days"}
+        fallBackText={"No Expenses in the past 7 days"}
+      />
     </View>
   );
 }

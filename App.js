@@ -8,27 +8,27 @@ import RecentExpensesScreen from "./Screens/RecentExpenses";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ManageExpenses from "./Screens/ManageExpenses";
 import Colors from "./constants/Colors";
+import IconButton from "./components/Ui/IconButton";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-function addExpenseHandler() {
-  console.log("add expense");
-}
-function BottomNavigation() {
+
+function BottomNavigation({ navigation }) {
   return (
     <Tab.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: Colors.primary700 },
-        headerTintColor: "#fff",
+        headerTintColor: Colors.white,
         tabBarActiveTintColor: Colors.primary700,
-        tabBarInactiveTintColor: "#adabab",
+        tabBarInactiveTintColor: Colors.gray300,
         headerRight: () => (
-          <Ionicons
-            name="ios-add"
+          <IconButton
+            icon="ios-add"
             size={24}
-            color={"#fff"}
-            onPress={addExpenseHandler}
-            style={styles.addButton}
+            color={Colors.white}
+            onPress={() => navigation.navigate("ManageExpenses")}
           />
         ),
       }}
@@ -60,16 +60,29 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Bottom Navigation"
-            component={BottomNavigation}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Manage Expenses" component={ManageExpenses} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              gestureDirection: "vertical",
+              headerStyle: { backgroundColor: Colors.primary700 },
+              headerTintColor: Colors.white,
+            }}
+          >
+            <Stack.Screen
+              name="Bottom Navigation"
+              component={BottomNavigation}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="ManageExpenses"
+              component={ManageExpenses}
+              options={{ presentation: "modal" }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
     </>
   );
 }
@@ -77,12 +90,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     alignItems: "center",
     justifyContent: "center",
-  },
-  addButton: {
-    marginRight: 18,
-    fontWeight: "bold",
   },
 });

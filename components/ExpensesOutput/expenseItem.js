@@ -1,18 +1,30 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import Colors from "../../constants/Colors";
+import { getFormattedDate } from "../../utils/getDateFormatter";
+import { useNavigation } from "@react-navigation/native";
 
-function ExpenseItem({ children }) {
+function ExpenseItem({ id, description, date, amount }) {
+  const navigation = useNavigation();
+  function itemDetailsHandler() {
+    navigation.navigate("ManageExpenses", { expenseID: id });
+  }
   return (
-    <View style={styles.itemOuterContainer}>
-      <View>
-        <Text style={styles.itemName}>Item Name</Text>
-        <Text style={styles.itemDate}>date added</Text>
+    <Pressable
+      onPress={itemDetailsHandler}
+      android_ripple={{ color: Colors.gray200 }}
+      style={({ pressed }) => pressed && styles.pressEffect}
+    >
+      <View style={styles.itemOuterContainer}>
+        <View style={styles.itemInnerContainer}>
+          <Text style={styles.itemName}>{description}</Text>
+          <Text style={styles.itemDate}>{date}</Text>
+        </View>
+        <View style={styles.priceContainer}>
+          <Text style={styles.itemPrice}>{amount.toFixed(2)}</Text>
+        </View>
       </View>
-      <View style={styles.priceContainer}>
-        <Text style={styles.itemPrice}>price</Text>
-      </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -28,26 +40,37 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     marginVertical: 8,
     borderRadius: 6,
+    elevation: 3,
+    shadowColor: "black",
+    shadowRadius: 4,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.4,
   },
   priceContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     borderRadius: 6,
+    padding: 15,
     justifyContent: "center",
     alignItems: "center",
-    padding: 15,
+    minWidth: 80,
   },
-
+  itemInnerContainer: {
+    flex: 3,
+  },
   itemName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: Colors.white,
   },
   itemDate: {
     fontSize: 14,
-    color: "#dedcdc",
+    color: Colors.gray200,
   },
   itemPrice: {
     color: Colors.primary500,
     fontWeight: "bold",
+  },
+  pressEffect: {
+    opacity: 0.5,
   },
 });
