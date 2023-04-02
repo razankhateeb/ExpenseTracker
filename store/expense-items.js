@@ -27,11 +27,15 @@ export const ExpensesSlice = createSlice({
         ...action.payload,
       };
       const index = state.expensesList.findIndex(
-        (expense) => expense.id === newExpense.id
+        (expense) => expense.id === newExpense.editedExpenseId
       );
-      console.log("index to be updated is", index);
+
       if (index !== -1) {
-        state.expensesList[index] = { description, amount, date }; // update the expense with the given ID in the list
+        state.expensesList[index] = {
+          amount: newExpense.expenseData.amount,
+          date: newExpense.expenseData.date,
+          description: newExpense.expenseData.description,
+        }; // update the expense with the given ID in the list
       }
     },
   },

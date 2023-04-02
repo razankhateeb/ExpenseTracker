@@ -4,7 +4,7 @@ import Colors from "../../constants/Colors";
 import { getFormattedDate } from "../../utils/getDateFormatter";
 import { useNavigation } from "@react-navigation/native";
 
-function ExpenseItem({ id, description, date, amount }) {
+function ExpenseItem({ id, description, date, amount, expenseData }) {
   const navigation = useNavigation();
   function itemDetailsHandler() {
     navigation.navigate("ManageExpenses", { expenseID: id });

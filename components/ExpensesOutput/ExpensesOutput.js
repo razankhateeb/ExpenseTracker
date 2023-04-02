@@ -4,6 +4,7 @@ import Colors from "../../constants/Colors";
 import ExpensesList from "./ExpensesList";
 import ExpensesSummary from "./ExpensesSummary";
 import { useSelector } from "react-redux";
+
 const getData = (expenseIds, PeriodNameText) => {
   if (PeriodNameText === "Last 7 Days") {
     return expenseIds.filter((item) => {
@@ -21,6 +22,7 @@ function ExpensesOutput({ PeriodNameText, fallBackText }) {
   const expenseIds = useSelector((state) => state.expenseItem.expensesList);
   const data = getData(expenseIds, PeriodNameText);
   let content = <Text style={styles.infoText}>{fallBackText}</Text>;
+
   if (expenseIds.length > 0) {
     content = <ExpensesList data={data} periodName={PeriodNameText} />;
   }

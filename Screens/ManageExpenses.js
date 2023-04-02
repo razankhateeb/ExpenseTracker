@@ -9,15 +9,20 @@ import {
   updateExpense,
 } from "../store/expense-items";
 import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
+import { storeExpense } from "../utils/http";
 
 function ManageExpenses({ route, navigation }) {
-  const expenseIds = useSelector((state) => state.expenseItem.ids);
   const dispatch = useDispatch();
   const editedExpenseId = route.params?.expenseID;
 
   // !! converts to boolean
   const isEditing = !!editedExpenseId;
 
+  const selectedExpense = useSelector((state) =>
+    state.expenseItem.expensesList.find(
+      (expense) => expense.id === editedExpenseId
+    )
+  );
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: isEditing ? "Edit Expense" : "Add Expense",
@@ -41,7 +46,7 @@ function ManageExpenses({ route, navigation }) {
             expenseData,
           })
         )
-      : dispatch(addExpense(expenseData));
+      : (storeExpense(expenseData), dispatch(addExpense(expenseData)));
     navigation.goBack();
   }
 
@@ -51,6 +56,7 @@ function ManageExpenses({ route, navigation }) {
         onCancel={cancelButtonHandler}
         submitButtonLabel={isEditing ? "Update" : "Add"}
         onSubmit={confirmButtonHandler}
+        defaultValues={selectedExpense}
       />
 
       <View>
