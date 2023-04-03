@@ -31,19 +31,22 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
 
   function onSubmitHandler() {
     setSubmit(true);
-    let date = null;
 
     const expenseData = {
-      amount: +inputs.amount.value,
-      date: new Date(inputs.date.value).toISOString().slice(0, 10),
-      //  date: date ? new Date(inputs.date.value).toISOString().slice(0, 10) : "",
+      amount: inputs.amount.value,
+
+      date: !!inputs.date.value
+        ? new Date(inputs.date.value).toISOString().slice(0, 10)
+        : "",
       description: inputs.description.value,
     };
+
+    console.log(expenseData);
 
     const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
     const dateIsValid = expenseData.date.toString() !== "";
     const desctIsValid = expenseData.description.trim().length > 0;
-
+    console.log(dateIsValid);
     if (!amountIsValid || !desctIsValid || !dateIsValid) {
       setInputs((curInputs) => {
         return {

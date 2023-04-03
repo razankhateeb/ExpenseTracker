@@ -9,7 +9,6 @@ export const ExpensesSlice = createSlice({
     addExpense: (state, action) => {
       const newExpense = {
         ...action.payload,
-        id: state.expensesList.length + 1,
       };
       state.expensesList.push(newExpense);
     },
@@ -38,11 +37,14 @@ export const ExpensesSlice = createSlice({
         }; // update the expense with the given ID in the list
       }
     },
+    setExpenses: (state, action) => {
+      state.expensesList = action.payload.reverse();
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addExpense, removeExpense, updateExpense } =
+export const { addExpense, removeExpense, updateExpense, setExpenses } =
   ExpensesSlice.actions;
 
 export default ExpensesSlice.reducer;

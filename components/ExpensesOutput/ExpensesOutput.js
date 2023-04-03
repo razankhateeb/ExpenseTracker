@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import Colors from "../../constants/Colors";
 import ExpensesList from "./ExpensesList";
 import ExpensesSummary from "./ExpensesSummary";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchExpenses } from "../../utils/http";
+import { setExpenses } from "../../store/expense-items";
+import LoadingOverlay from "../Ui/LoadingOverlay";
+import ErrorOverlay from "../Ui/ErrorOverlay";
 
 const getData = (expenseIds, PeriodNameText) => {
   if (PeriodNameText === "Last 7 Days") {
@@ -20,12 +24,43 @@ const getData = (expenseIds, PeriodNameText) => {
 };
 function ExpensesOutput({ PeriodNameText, fallBackText }) {
   const expenseIds = useSelector((state) => state.expenseItem.expensesList);
+
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
+
+  function ErrorHandler() {
+    setError(null);
+  }
+
+  useEffect(() => {
+    async function getExpenses() {
+      try {
+        const expenses = await fetchExpenses();
+        dispatch(setExpenses(expenses));
+      } catch (error) {
+        setError("Couldn't fetch expenses ");
+      }
+
+      setIsFetching(false);
+    }
+    getExpenses();
+  }, []);
   const data = getData(expenseIds, PeriodNameText);
   let content = <Text style={styles.infoText}>{fallBackText}</Text>;
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} onConfirm={ErrorHandler} />;
+  }
+  if (isFetching) {
+    return <LoadingOverlay />;
+  }
 
   if (expenseIds.length > 0) {
     content = <ExpensesList data={data} periodName={PeriodNameText} />;
   }
+
   return (
     <View>
       <ExpensesSummary periodName={PeriodNameText} expenses={data} />

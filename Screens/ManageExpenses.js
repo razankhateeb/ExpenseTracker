@@ -1,53 +1,89 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import IconButton from "../components/Ui/IconButton";
 import Colors from "../constants/Colors";
 import { useSelector, useDispatch } from "react-redux";
+import LoadingOverlay from "../components/Ui/LoadingOverlay";
+import ErrorOverlay from "../components/Ui/ErrorOverlay";
+import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
 import {
   addExpense,
   removeExpense,
   updateExpense,
 } from "../store/expense-items";
-import ExpenseForm from "../components/ManageExpenses/ExpenseForm";
-import { storeExpense } from "../utils/http";
+import {
+  storeExpense,
+  updateExpenseDetails,
+  deleteExpense,
+} from "../utils/http";
 
 function ManageExpenses({ route, navigation }) {
   const dispatch = useDispatch();
   const editedExpenseId = route.params?.expenseID;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  function ErrorHandler() {
+    setError(null);
+  }
 
   // !! converts to boolean
   const isEditing = !!editedExpenseId;
 
-  const selectedExpense = useSelector((state) =>
-    state.expenseItem.expensesList.find(
-      (expense) => expense.id === editedExpenseId
-    )
-  );
+  const selectedExpense = isEditing
+    ? useSelector((state) =>
+        state.expenseItem.expensesList.find(
+          (expense) => expense.id === editedExpenseId
+        )
+      )
+    : null;
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: isEditing ? "Edit Expense" : "Add Expense",
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {
-    dispatch(removeExpense(editedExpenseId));
-    navigation.goBack();
+  async function deleteExpenseHandler() {
+    setIsSubmitting(true);
+    try {
+      await deleteExpense(editedExpenseId);
+      dispatch(removeExpense(editedExpenseId));
+      navigation.goBack();
+    } catch (err) {
+      setError("could not delete expense");
+      setIsSubmitting(false);
+    }
   }
 
   function cancelButtonHandler() {
     navigation.goBack();
   }
 
-  function confirmButtonHandler(expenseData) {
-    isEditing
-      ? dispatch(
+  async function confirmButtonHandler(expenseData) {
+    setIsSubmitting(true);
+    try {
+      if (isEditing) {
+        dispatch(
           updateExpense({
             editedExpenseId,
             expenseData,
           })
-        )
-      : (storeExpense(expenseData), dispatch(addExpense(expenseData)));
-    navigation.goBack();
+        );
+        await updateExpenseDetails(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        dispatch(addExpense({ ...expenseData, id: id }));
+      }
+      navigation.goBack();
+    } catch (err) {
+      setError("couldn't save data");
+      setIsSubmitting(false);
+    }
+  }
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} onConfirm={ErrorHandler} />;
+  }
+  if (isSubmitting) {
+    return <LoadingOverlay />;
   }
 
   return (
