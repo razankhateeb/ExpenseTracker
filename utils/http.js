@@ -33,5 +33,5 @@ export async function updateExpenseDetails(id, expenseData) {
 }
 
 export async function deleteExpense(id) {
-  return axios.delete(BACKEND_URL + `/expenses/${id}.json`);
+  return await axios.delete(BACKEND_URL + `/expenses/${id}.json`);
 }
