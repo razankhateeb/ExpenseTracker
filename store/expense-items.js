@@ -9,7 +9,6 @@ export const ExpensesSlice = createSlice({
     addExpense: (state, action) => {
       const newExpense = {
         ...action.payload,
-        id: state.expensesList.length + 1,
       };
       state.expensesList.push(newExpense);
     },
@@ -27,18 +26,25 @@ export const ExpensesSlice = createSlice({
         ...action.payload,
       };
       const index = state.expensesList.findIndex(
-        (expense) => expense.id === newExpense.id
+        (expense) => expense.id === newExpense.editedExpenseId
       );
-      console.log("index to be updated is", index);
+
       if (index !== -1) {
-        state.expensesList[index] = { description, amount, date }; // update the expense with the given ID in the list
+        state.expensesList[index] = {
+          amount: newExpense.expenseData.amount,
+          date: newExpense.expenseData.date,
+          description: newExpense.expenseData.description,
+        }; // update the expense with the given ID in the list
       }
+    },
+    setExpenses: (state, action) => {
+      state.expensesList = action.payload.reverse();
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addExpense, removeExpense, updateExpense } =
+export const { addExpense, removeExpense, updateExpense, setExpenses } =
   ExpensesSlice.actions;
 
 export default ExpensesSlice.reducer;

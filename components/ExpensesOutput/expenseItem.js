@@ -4,7 +4,7 @@ import Colors from "../../constants/Colors";
 import { getFormattedDate } from "../../utils/getDateFormatter";
 import { useNavigation } from "@react-navigation/native";
 
-function ExpenseItem({ id, description, date, amount }) {
+function ExpenseItem({ id, description, date, amount, expenseData }) {
   const navigation = useNavigation();
   function itemDetailsHandler() {
     navigation.navigate("ManageExpenses", { expenseID: id });
@@ -21,7 +21,7 @@ function ExpenseItem({ id, description, date, amount }) {
           <Text style={styles.itemDate}>{date}</Text>
         </View>
         <View style={styles.priceContainer}>
-          <Text style={styles.itemPrice}>{amount.toFixed(2)}</Text>
+          <Text style={styles.itemPrice}>{parseInt(amount).toFixed(2)}</Text>
         </View>
       </View>
     </Pressable>

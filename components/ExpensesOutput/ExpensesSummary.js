@@ -6,10 +6,12 @@ function ExpensesSummary({ periodName, expenses }) {
   const expensesSum = expenses.reduce((sum, expense) => {
     return sum + expense.amount;
   }, 0);
+  console.log(expensesSum);
+
   return (
     <View style={styles.container}>
       <Text style={styles.periodText}>{periodName}</Text>
-      <Text style={styles.totalText}>${expensesSum.toFixed(2)}</Text>
+      <Text style={styles.totalText}>${parseInt(expensesSum).toFixed(2)}</Text>
     </View>
   );
 }

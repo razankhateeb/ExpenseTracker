@@ -1,6 +1,7 @@
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import ExpensesOutput from "../components/ExpensesOutput/ExpensesOutput";
+import { fetchExpenses } from "../utils/http";
 
 function RecentExpensesScreen() {
   return (

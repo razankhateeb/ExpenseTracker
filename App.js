@@ -94,4 +94,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  screenContainer: {
+    flex: 1,
+    backgroundColor: "#7238ff",
+  },
 });
